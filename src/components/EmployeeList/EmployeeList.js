@@ -12,7 +12,7 @@ export default class EmployeeList extends Component {
     API.getUser()
       .then((res) =>
         this.setState({
-          employees: res.data.result,
+          employees: res.data.results,
           filteredEmployees: res.data.results,
         })
       )
@@ -24,25 +24,26 @@ export default class EmployeeList extends Component {
     this.setState({ [name]: value });
   };
 
-  searchByName = (event) => {
+  handleFormSubmit = (event) => {
     event.preventDefault();
-    const filtered = this.state.filteredEmployees.filter(
-      (obj) => obj.name.first === this.state.getUser
+
+    const jason = this.state.employees.filter((employees) => {
+      const fullName = `${employees.name.first} ${employees.name.last}`;
+      return fullName.toLowerCase().includes(this.state.search.toLowerCase());
+    });
+    this.setState({ filteredEmployees: jason });
+  };
+
+  nameSearch = (event) => {
+    event.preventDefault();
+    const filtered = this.state.employees.filter(
+      (obj) => obj.name.first === this.state.search
     );
     this.setState({ employees: filtered });
   };
 
-  handleFormSubmit = (event) => {
-    event.preventDefault();
-
-    const jason = this.state.employees.filter((employee) => {
-      const fullName = `${employee.name.first} ${employee.name.last}`;
-      return fullName.toLowerCase().includes(this.state.search.toLowerCase());
-    });
-    this.searchEmployee(this.state.search);
-  };
-
   handleNameFilter = () => {
+    console.log("Click");
     const sorted = this.state.filteredEmployees.sort((a, b) =>
       a.name.first > b.name.first ? 1 : -1
     );
@@ -51,65 +52,81 @@ export default class EmployeeList extends Component {
 
   render() {
     return (
-      <div>
-        <div className="list-container">
-          <form
-            className="form-inline"
-            id="form-center"
-            onSubmit={this.handleFormSubmit}
-          >
-            <div className="form-group mb-2">
-              <label htmlFor="emp-search" className="sr-only">
-                Search Employees:
-              </label>
-              <input
-                type="text"
-                name="search"
-                onChange={this.handleInputChange}
-                placeholder="Search Employees"
-              />
-            </div>
+      <div className="list-container">
+        <form
+          className="form-inline submit"
+          id="form-center"
+          onSubmit={this.handleFormSubmit}
+        >
+          <div className="form-group mb-2">
+            <label htmlFor="emp-search" className="sr-only">
+              Search Employees:
+            </label>
+            <input
+              type="text"
+              name="search"
+              onChange={this.handleInputChange}
+              placeholder="Search Employees"
+            />
+
             <button
-              onClick={(this.searchByName}
+              onClick={
+                (this.nameSearch,
+                console.log("this console log can be ignored"))
+              }
               type="submit"
               className="btn btn-primary mb-2"
             >
               Search!
             </button>
-          </form>
+          </div>
+        </form>
 
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th></th>
-                <th
-                  scope="col"
-                  onClick={this.handleNameFilter}
-                  className="name.first"
-                >
-                  <i className="fas fa-user-alt center-icon"></i>
-                  <i className="fas fa-caret-down"></i>
-                </th>
-                <th scope="col" className="center-icon">
-                  <i className="far fa-envelope center-icon"></i>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.filteredEmployees.map((employee, index) => (
-                <EmployeeCard
-                  firstName={employee.name.first}
-                  lastName={employee.name.last}
-                  DOB={employee.dob.age}
-                  email={employee.email}
-                  phone={employee.cell}
-                  picture={employee.picture.large}
-                  key={index}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Picture</th>
+              <th
+                scope="col"
+                // onClick={this.handleNameFilter}
+                className="name.first"
+                onClick={this.handleNameFilter}
+              >
+                Sort by First Name
+                <i className="fas fa-user-alt center-icon"></i>
+                <i className="fas fa-caret-down"></i>
+              </th>
+              <th scope="col" className="center-icon">
+                {" "}
+                Email
+                <i className="far fa-envelope center-icon"></i>
+              </th>
+              <th scope="col" className="center-icon">
+                {" "}
+                Phone
+                <i className="far fa-envelope center-icon"></i>
+              </th>
+              <th scope="col" className="center-icon">
+                {" "}
+                Age
+                <i className="far fa-envelope center-icon"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.filteredEmployees.map((employee, index) => (
+              <EmployeeCard
+                firstName={employee.name.first}
+                lastName={employee.name.last}
+                DOB={employee.dob.age}
+                email={employee.email}
+                phone={employee.cell}
+                picture={employee.picture.large}
+                key={index}
+              />
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }
