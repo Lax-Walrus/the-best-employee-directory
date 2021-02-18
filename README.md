@@ -2,7 +2,9 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-![snapshot](src\Images\screenshot.PNG)
+![snapshot](src/Images/screenshot.PNG)
+
+Deployement Link: https://kl-the-best-employee-directory.herokuapp.com/
 
 ## description:
 
